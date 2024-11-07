@@ -1,6 +1,7 @@
-FROM ruby:2.6.3-stretch
+# workaround for building on Apple Silicon: google-chrome-stable is only available for amd64, apparently
+FROM --platform=linux/amd64 ruby:3.2.4-bookworm
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
@@ -14,7 +15,7 @@ RUN apt-get update && \
     libxslt-dev \
     netcat-openbsd \
     nodejs \
-    openjdk-8-jdk \
+    openjdk-17-jdk \
     unzip \
     wget
 
@@ -26,11 +27,11 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 
 # install FITS for file characterization
 RUN mkdir -p /opt/fits && \
-  curl -fSL -o /opt/fits-1.0.5.zip http://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip && \
-  cd /opt && unzip fits-1.0.5.zip && chmod +X fits-1.0.5/fits.sh
+  curl -fSL -o /opt/fits-1.6.0.zip https://github.com/harvard-lts/fits/releases/download/1.6.0/fits-1.6.0.zip 
+RUN cd /opt/fits && unzip ../fits-1.6.0.zip && chmod +X fits.sh
 
 RUN gem update --system
-RUN gem install bundler:2.1.4
+# RUN gem install bundler:2.1.4
 
 RUN mkdir /data
 WORKDIR /data

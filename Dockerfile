@@ -1,4 +1,4 @@
-FROM ruby:2.6.3-stretch
+FROM ruby:3.2.4-bookworm
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
